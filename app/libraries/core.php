@@ -15,13 +15,15 @@ class Core
         //print_r($this->getUrl());
 
         $url = $this->getUrl();
-
+        // print_r($url);
         // Look in controllers for first value
-        if (file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
-            // If exists, set as controller
-            $this->currentController = ucwords($url[0]);
-            // Unset 0 Index
-            unset($url[0]);
+        if (isset($url[0])) {
+            if (file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
+                // If exists, set as controller
+                $this->currentController = ucwords($url[0]);
+                // Unset 0 Index
+                unset($url[0]);
+            }
         }
 
         // Require the controller
@@ -41,9 +43,11 @@ class Core
         }
 
         // Get params
+
         $this->params = $url ? array_values($url) : [];
 
         // Call a callback with array of params
+        // print_r([$this->currentController, $this->currentMethod]);
         call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
     }
 
@@ -51,7 +55,7 @@ class Core
     {
         if (isset($_GET['url'])) {
             $url = rtrim($_GET['url'], '/');
-            $url = filter_var($url, FILTER_SANITIZE_URL);
+            $url = filter_var($url, FILTER_SANITIZE_URL); /*illegual string remove*/
             $url = explode('/', $url);
             return $url;
         }
